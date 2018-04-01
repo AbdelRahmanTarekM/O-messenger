@@ -241,9 +241,11 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                         Users users = response.body();
                         String xAuth = response.headers().get("x-auth");
                         session.LoginSession(Username, Password, xAuth);
-                        Log.d(TAG, "user: " + (users != null ? users.getId() : null));
-                        TransferObserver observer = transferUtility.upload(users.getId(), new File(path));
-                        transferObserverListener(observer);
+                        if (path != null) {
+                            Log.d(TAG, "user: " + (users != null ? users.getId() : null));
+                            TransferObserver observer = transferUtility.upload(users.getId(), new File(path));
+                            transferObserverListener(observer);
+                        }
                         Intent i = new Intent(RegistrationActivity.this, WelcomeActivity.class);
                         startActivity(i);
                         finish();
