@@ -244,6 +244,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                         Log.d(TAG, "user: " + (users != null ? users.getId() : null));
                         TransferObserver observer = transferUtility.upload(users.getId(), new File(path));
                         transferObserverListener(observer);
+                        Intent i = new Intent(RegistrationActivity.this, WelcomeActivity.class);
+                        startActivity(i);
+                        finish();
 
                     }
 
@@ -331,9 +334,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     Log.d("MainActivity", "Done");
-                    Intent i = new Intent(RegistrationActivity.this, WelcomeActivity.class);
-                    startActivity(i);
-                    finish();
                 }
             }
 
