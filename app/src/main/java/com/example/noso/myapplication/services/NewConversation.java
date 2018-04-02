@@ -16,6 +16,7 @@ import com.example.noso.myapplication.ChatScreen;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
 import com.example.noso.myapplication.PreferenceManager;
 import com.example.noso.myapplication.R;
+import com.example.noso.myapplication.beans.Friends;
 import com.example.noso.myapplication.beans.Users;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class NewConversation extends AppCompatActivity {
     EditText search;
     String friend;
     List<String> Searched = new ArrayList<String>();
-    List<Users> users;
+    List<Friends> users;
     ArrayAdapter<String> arrayAdapter;
     List<String> names;
     private ListView listView;
@@ -51,17 +52,17 @@ public class NewConversation extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create());
         Retrofit retrofit = builder.build();
         FriendsClient client = retrofit.create(FriendsClient.class);
-        Call<List<Users>> call = client.friends(PreferenceManager.xAuthToken);
+        Call<List<Friends>> call = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + call.toString());
-        call.enqueue(new Callback<List<Users>>() {
+        call.enqueue(new Callback<List<Friends>>() {
             @Override
-            public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
+            public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
                 users = response.body();
                 arrayAdapter = new ArrayAdapter<String>(NewConversation.this, android.R.layout.simple_list_item_1);
 
                 names = new ArrayList<String>();
                 for (int i = 0; i < users.size(); i++) {
-                    names.add(users.get(i).getUsername());
+                    names.add(users.get(i).getUserName());
                 }
 
                 arrayAdapter.addAll(names);
@@ -78,7 +79,7 @@ public class NewConversation extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Users>> call, Throwable t) {
+            public void onFailure(Call<List<Friends>> call, Throwable t) {
 
             }
         });
@@ -91,8 +92,8 @@ public class NewConversation extends AppCompatActivity {
                 if(arrayAdapter!=null){
                     arrayAdapter.clear();
                     for (int i = 0; i < users.size(); i++) {
-                        if (friend.equals(users.get(i).getUsername())) {
-                            Searched.add(users.get(i).getUsername());
+                        if (friend.equals(users.get(i).getUserName())) {
+                            Searched.add(users.get(i).getUserName());
                         }
                     }
                     arrayAdapter.addAll(Searched);

@@ -5,37 +5,30 @@ package com.example.noso.myapplication.beans;
  */
 
 public class Friends {
-    private String Name;
-    private  String userName;
-    private Integer ID;
+    private  String username;
+    private String _id;
+    private String userId;
 
-    public Friends(String name, String userName, Integer ID) {
-        Name = name;
-        this.userName = userName;
-        this.ID = ID;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
+    public Friends(String name, String userName, String ID,String userId) {
+        this.username = userName;
+        this._id = ID;
+        this.userId = userId;
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
-    public Integer getID() {
-        return ID;
+    public String getID() {
+        return userId;
     }
 
-    public void setID(Integer ID) {
-        this.ID = ID;
+    public void setID(String ID) {
+        this._id = ID;
     }
+
 }

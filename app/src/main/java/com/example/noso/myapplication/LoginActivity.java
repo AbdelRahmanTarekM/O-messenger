@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.UsersClient;
 import com.example.noso.myapplication.beans.Users;
-import com.example.noso.myapplication.services.notificationServices;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -123,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (users != null) {
                                 session.LoginSession(Username, Password, xAuth);
+                                Log.d("O-messenger", "x-auth: " + xAuth);
 
                                 Toast.makeText(getApplicationContext(), "Login Successful !", Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(LoginActivity.this, Chats.class);
@@ -132,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, "Please check your credentials", Toast.LENGTH_LONG).show();
                             }
                         }
+
                         @Override
                         public void onFailure(Call<Users> call, Throwable t) {
                             enableControls();
@@ -139,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("homie", "onFailure: ", t);
                         }
                     });
-                }else{
+                } else {
                     parent.startAnimation(shakingAnimation);
                 }
             }
@@ -165,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
         mail.setEnabled(false);
     }
 
-    private void enableControls(){
+    private void enableControls() {
         loginBtn.setEnabled(true);
         pw.setEnabled(true);
         mail.setEnabled(true);

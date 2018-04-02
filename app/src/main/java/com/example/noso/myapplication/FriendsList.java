@@ -9,12 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.beans.Friends;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +37,13 @@ public class FriendsList extends Fragment {
     private View parentView;
     private ListView listView;
     private LinearLayout errorLayout;
-    private Call<List<Users>> call;
+    private Call<List<Friends>> call;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         parentView = inflater.inflate(R.layout.friends_list, container, false);
-        listView = (ListView) parentView.findViewById(R.id.friendsList);
-        errorLayout=(LinearLayout) parentView.findViewById(R.id.layout_error_friends);
+        listView = parentView.findViewById(R.id.friendsList);
+        errorLayout = parentView.findViewById(R.id.layout_error_friends);
         initView();
         return parentView;
     }
@@ -56,17 +57,17 @@ public class FriendsList extends Fragment {
         FriendsClient client = retrofit.create(FriendsClient.class);
         call = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + call.toString());
-        call.enqueue(new Callback<List<Users>>() {
+        call.enqueue(new Callback<List<Friends>>() {
             @Override
-            public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
-                List<Users> users = response.body();
-                if(users==null || users.size()==0){
+            public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
+                List<Friends> users = response.body();
+                if (users == null || users.size() == 0) {
                     errorLayout.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1);
                     List<String> names = new ArrayList<String>();
                     for (int i = 0; i < users.size(); i++) {
-                        names.add(users.get(i).getUsername());
+                        names.add(users.get(i).getUserName());
                     }
                     arrayAdapter.addAll(names);
                     listView.setAdapter(arrayAdapter);
@@ -80,7 +81,7 @@ public class FriendsList extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Users>> call, Throwable t) {
+            public void onFailure(Call<List<Friends>> call, Throwable t) {
 
             }
         });
@@ -89,7 +90,7 @@ public class FriendsList extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if(call.isExecuted())
+        if (call.isExecuted())
             call.cancel();
     }
 }
