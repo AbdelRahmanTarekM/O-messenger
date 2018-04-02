@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_screen3">
+    android:background="@color/bg_screen4">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -14,14 +14,14 @@
         <ImageView
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
-            android:src="@drawable/ic_discount" />
+            android:src="@drawable/ocr" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/slide_3_title"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_title"
+            android:textSize="24dp"
             android:textStyle="bold" />
 
         <TextView
@@ -33,7 +33,7 @@
             android:text="@string/slide_3_desc"
             android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_desc" />
+            android:textSize="26dp" />
 
     </LinearLayout>
 

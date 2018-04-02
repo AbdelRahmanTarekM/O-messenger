@@ -94,6 +94,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 R.layout.welcome1,
                 R.layout.welcome2,
                 R.layout.welcome3,
+                R.layout.welcome4
         };
 
         // adding bottom dots
@@ -140,7 +141,7 @@ public class WelcomeActivity extends AppCompatActivity {
             dots[i] = new TextView(this);
             dots[i].setText(Html.fromHtml("&#8226;"));
             dots[i].setTextSize(35);
-            dots[i].setTextColor(colorsInactive[currentPage]);
+            dots[i].setTextColor(colorsActive[currentPage]);
             dotsLayout.addView(dots[i]);
         }
 

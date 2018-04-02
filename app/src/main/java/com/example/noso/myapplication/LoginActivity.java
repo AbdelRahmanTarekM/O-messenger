@@ -51,6 +51,12 @@ public class LoginActivity extends AppCompatActivity {
         signUpBtn = findViewById(R.id.SignUp);
         parent = findViewById(R.id.login_parent);
         session = new PreferenceManager(getApplicationContext());
+        boolean login = session.isLoggedIn();
+        if(login)
+        {
+            Intent i = new Intent(LoginActivity.this, Chats.class);
+            startActivity(i);
+        }
 
         mail.addTextChangedListener(new TextWatcher() {
             @Override
@@ -113,8 +119,11 @@ public class LoginActivity extends AppCompatActivity {
                             Users users = response.body();
                             String xAuth = response.headers().get("x-auth");
                             Log.d("homie", "onResponse: " + (users != null ? users.getId() : null));
+
+
                             if (users != null) {
                                 session.LoginSession(Username, Password, xAuth);
+
                                 Toast.makeText(getApplicationContext(), "Login Successful !", Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(LoginActivity.this, Chats.class);
                                 startActivity(i);

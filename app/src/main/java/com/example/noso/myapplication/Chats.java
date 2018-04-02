@@ -113,29 +113,6 @@ public class Chats extends AppCompatActivity {
                 Intent q = new Intent(Chats.this, Setting.class);
                 startActivity(q);
                 return true;
-            case R.id.logout:
-                //TODO: get x-auth and send @PUT
-                Retrofit.Builder builder = new Retrofit.Builder()
-                        .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                        .addConverterFactory(GsonConverterFactory.create());
-                Retrofit retrofit = builder.build();
-                UsersClient client = retrofit.create(UsersClient.class);
-                Call<String> call = client.logout(PreferenceManager.xAuthToken);
-                Log.d("homie", "onClick: " + call.toString());
-                call.enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        Intent intent = new Intent(Chats.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-
-                    }
-                });
-                return true;
         }
 
         return false;
@@ -147,5 +124,15 @@ public class Chats extends AppCompatActivity {
         if(userCall.isExecuted())
             userCall.cancel();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
+        startActivity(intent);
+        finish();
+        System.exit(0);
     }
 }
