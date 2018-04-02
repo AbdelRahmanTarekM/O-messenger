@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.FriendsClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
+import com.example.noso.myapplication.beans.Friends;
 import com.example.noso.myapplication.beans.Users;
 import com.example.noso.myapplication.services.NewConversation;
 
@@ -32,7 +33,7 @@ public class Chats extends AppCompatActivity {
     FloatingActionButton fab;
     PreferenceManager session;
     private ListView listView;
-    Call<List<Users>> userCall;
+    Call<List<Friends>> userCall;
     LinearLayout errorLayout;
 
     @Override
@@ -56,17 +57,17 @@ public class Chats extends AppCompatActivity {
         FriendsClient client = retrofit.create(FriendsClient.class);
         userCall = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + userCall.toString());
-        userCall.enqueue(new Callback<List<Users>>() {
+        userCall.enqueue(new Callback<List<Friends>>() {
             @Override
-            public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
-                List<Users> users = response.body();
+            public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
+                List<Friends> users = response.body();
                 if(users==null || users.size()==0){
                     errorLayout.setVisibility(View.VISIBLE);
                 }else{
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(Chats.this, android.R.layout.simple_list_item_1);
                     List<String> names = new ArrayList<String>();
                     for (int i = 0; i < users.size(); i++) {
-                        names.add(users.get(i).getUsername());
+                        names.add(users.get(i).getUserName());
                     }
                     arrayAdapter.addAll(names);
                     listView.setAdapter(arrayAdapter);
@@ -81,7 +82,7 @@ public class Chats extends AppCompatActivity {
                 }
             }
             @Override
-            public void onFailure(Call<List<Users>> call, Throwable t) {
+            public void onFailure(Call<List<Friends>> call, Throwable t) {
                 Toast.makeText(Chats.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         });

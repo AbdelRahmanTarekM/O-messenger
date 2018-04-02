@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@android:color/white"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/layout_top"
         android:layout_width="fill_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/loginRegistrationBackground"
-        android:id="@+id/layout_top">
+        android:orientation="vertical">
 
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="3dp"
-            android:background="#2ea3fe"/>
+            android:background="#2ea3fe" />
 
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent">
 
             <Button
+                android:id="@+id/title_bar_left_menu"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:background="@drawable/titlebar_menu_selector"
-                android:id="@+id/title_bar_left_menu"
                 android:layout_gravity="left|center_vertical"
-                android:layout_marginLeft="10dp"/>
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/titlebar_menu_selector" />
 
             <TextView
                 android:layout_width="352dp"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="Manage Friends"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textSize="25sp" />
+
+            <Button
+                android:id="@+id/add_btn"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:text="add"
+                android:textColor="@android:color/white" />
 
 
         </FrameLayout>
@@ -45,7 +54,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
-            android:background="#ebebeb"/>
+            android:background="#ebebeb" />
 
     </LinearLayout>
 

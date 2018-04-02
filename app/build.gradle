@@ -38,7 +38,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-vision:9.8.0'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile ('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true; }
+    compile('com.amazonaws:aws-android-sdk-mobile-client:2.6.7@aar') { transitive = true; }
     compile 'com.amazonaws:aws-android-sdk-s3:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-cognito:2.6.+'
     compile 'com.amazonaws:aws-android-sdk-core:2.2.13'

@@ -1,5 +1,6 @@
 package com.example.noso.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.noso.myapplication.FriendsList;
@@ -20,6 +22,7 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
     private FriendsActivity mContext;
     private ResideMenuItem itemHome;
     private ResideMenuItem itemProfile;
+    private Button add;
    // private ResideMenuItem itemChat;
  //   private ResideMenuItem itemSettings;
 
@@ -30,6 +33,8 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+        add = findViewById(R.id.add_btn);
+        add.setOnClickListener(this);
         //Toolbar myToolbar = (Toolbar) findViewById(R.id.chats_toolbar);
         //myToolbar.setTitle("Chats");
         //myToolbar.setBackgroundColor(R.color.navigationBarColor);
@@ -85,6 +90,9 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
             changeFragment(new FriendsList());
         }else if (view == itemProfile){
             changeFragment(new FriendRequest());
+        }else if (view == add){
+            Intent intent = new Intent(this,AddFriendActivity.class);
+            startActivity(intent);
         }
         resideMenu.closeMenu();
     }
