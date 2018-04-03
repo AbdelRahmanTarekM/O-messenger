@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     Button loginBtn, signUpBtn;
     PreferenceManager session;
     LinearLayout parent;
+    String xauth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +51,16 @@ public class LoginActivity extends AppCompatActivity {
         signUpBtn = findViewById(R.id.SignUp);
         parent = findViewById(R.id.login_parent);
         session = new PreferenceManager(getApplicationContext());
-        boolean login = session.isLoggedIn();
-        if(login)
+
+
+
+        if(session.isLoggedIn())
         {
             Intent i = new Intent(LoginActivity.this, Chats.class);
+
             startActivity(i);
+            finish();
+
         }
 
         mail.addTextChangedListener(new TextWatcher() {

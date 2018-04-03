@@ -42,6 +42,10 @@ public class PreferenceManager extends AppCompatActivity {
         xAuthToken = xAuth;
         editor.commit();
     }
+    public String returnxAuth()
+    {
+        return xAuthToken;
+    }
 
     public HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
@@ -64,11 +68,6 @@ public class PreferenceManager extends AppCompatActivity {
         return pref.getBoolean(IS_LOGIN, false);
     }
 
-    public void LogoutUser() {
-        editor.clear();
-        editor.commit();
-        Intent i = new Intent(context, LoginActivity.class);
-        context.startActivity(i);
-    }
+
 }
 

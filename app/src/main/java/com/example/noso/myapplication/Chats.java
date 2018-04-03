@@ -46,10 +46,12 @@ public class Chats extends AppCompatActivity {
         myToolbar.setTitleTextColor(R.color.windowBackground);*/
         setSupportActionBar(myToolbar);
         session = new PreferenceManager(getApplicationContext());
+        String xauth = session.returnxAuth();
+
         listView = findViewById(R.id.chats);
         errorLayout=findViewById(R.id.layout_error_chats);
 
-
+        PreferenceManager.xAuthToken=xauth;
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
                 .addConverterFactory(GsonConverterFactory.create());
@@ -127,13 +129,5 @@ public class Chats extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//***Change Here***
-        startActivity(intent);
-        finish();
-        System.exit(0);
-    }
+
 }
