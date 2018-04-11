@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -42,8 +43,8 @@ public class PreferenceManager extends AppCompatActivity {
         xAuthToken = xAuth;
         editor.commit();
     }
-    public String returnxAuth()
-    {
+
+    public String returnxAuth() {
         return xAuthToken;
     }
 
@@ -65,6 +66,8 @@ public class PreferenceManager extends AppCompatActivity {
     }
 
     public boolean isLoggedIn() {
+        xAuthToken = pref.getString(KEY_X_AUTH, null);
+        Log.d("O-messenger", "X-auth token: " + xAuthToken);
         return pref.getBoolean(IS_LOGIN, false);
     }
 
