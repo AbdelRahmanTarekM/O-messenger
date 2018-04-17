@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
 import com.example.noso.myapplication.beans.Friends;
 import com.example.noso.myapplication.beans.UserId;
@@ -50,11 +51,8 @@ public class FriendRequest extends Fragment {
 
     private void initView() {
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-        final FriendsClient client = retrofit.create(FriendsClient.class);
+
+        final FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
         Call<List<Friends>> call = client.requests(PreferenceManager.xAuthToken);
 
         Log.d("O-messenge", "onClick: " + call.toString());
@@ -84,7 +82,6 @@ public class FriendRequest extends Fragment {
                             alertDialog.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    //TODO: approve friend request
                                     Log.d("homie", "onClick: AddFriend " + pos + " " + users.get(pos).getID());
                                     Call<Users> call = client.approveFriend(PreferenceManager.xAuthToken, new UserId(users.get(pos).getID()));
                                     call.enqueue(new Callback<Users>() {

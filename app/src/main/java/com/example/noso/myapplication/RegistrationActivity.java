@@ -29,6 +29,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
 import com.example.noso.myapplication.beans.Users;
 
@@ -226,11 +227,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 Username = uName.getText().toString();
                 Users users = new Users(Username, Email, Password);
 
-                Retrofit.Builder builder = new Retrofit.Builder()
-                        .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                        .addConverterFactory(GsonConverterFactory.create());
-                Retrofit retrofit = builder.build();
-                UsersClient client = retrofit.create(UsersClient.class);
+                UsersClient client = ApiClient.getClient().create(UsersClient.class);
                 Call<Users> call = client.signup(users);
                 Log.d("homie", "onClick: " + call.toString());
                 disableControls();

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
 import com.example.noso.myapplication.beans.Friends;
 
@@ -50,11 +51,8 @@ public class FriendsList extends Fragment {
 
     private void initView() {
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-        FriendsClient client = retrofit.create(FriendsClient.class);
+
+        FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
         call = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + call.toString());
         call.enqueue(new Callback<List<Friends>>() {

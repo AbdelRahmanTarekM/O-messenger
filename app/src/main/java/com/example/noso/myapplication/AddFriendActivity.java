@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
 import com.example.noso.myapplication.beans.UserId;
 import com.example.noso.myapplication.beans.UserName;
@@ -54,14 +55,10 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
                 alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Retrofit.Builder builder = new Retrofit.Builder()
-                                .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                                .addConverterFactory(GsonConverterFactory.create());
-                        Retrofit retrofit = builder.build();
-                        FriendsClient client = retrofit.create(FriendsClient.class);
+
+                        FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
                         Call<Users> call = client.addFriend(PreferenceManager.xAuthToken, new UserId(users.get(position).getId()));
-                        Log.d("homie", "onClick: AddFriend " + call.toString());
-                        Log.d("homie", "onClick: AddFriend " + position + " " + users.get(position).getId());
+
                         call.enqueue(new Callback<Users>() {
                             @Override
                             public void onResponse(Call<Users> call, Response<Users> response) {
@@ -95,25 +92,17 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.search_btn) {
-            Retrofit.Builder builder = new Retrofit.Builder()
-                    .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                    .addConverterFactory(GsonConverterFactory.create());
-            Retrofit retrofit = builder.build();
-            FriendsClient client = retrofit.create(FriendsClient.class);
+
+            FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
             Call<List<Users>> call = client.search(PreferenceManager.xAuthToken, new UserName(searchBar.getText().toString()));
-            Log.d("homie", "onClick: AddFriend " + call.toString());
             call.enqueue(new Callback<List<Users>>() {
                 @Override
                 public void onResponse(Call<List<Users>> call, Response<List<Users>> response) {
                     users = response.body();
-                    Log.d("homie", "onResponse: " + users.size());
                     arrayAdapter.clear();
                     List<String> names = new ArrayList<>();
                     for (int i = 0; i < users.size(); i++) {
                         names.add(users.get(i).getUsername() + "\n" + users.get(i).getEmail());
-                        Log.d("O-messenger", "pos: " + i +
-                                " username: " + users.get(i).getUsername() +
-                                " userID: " + users.get(i).getId());
                     }
 
                     arrayAdapter.addAll(names);

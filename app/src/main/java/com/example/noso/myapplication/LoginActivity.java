@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
 import com.example.noso.myapplication.beans.Users;
 
@@ -109,11 +110,8 @@ public class LoginActivity extends AppCompatActivity {
                     Users users = new Users();
                     users.setEmail(Username);
                     users.setPassword(Password);
-                    Retrofit.Builder builder = new Retrofit.Builder()
-                            .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                            .addConverterFactory(GsonConverterFactory.create());
-                    Retrofit retrofit = builder.build();
-                    UsersClient client = retrofit.create(UsersClient.class);
+
+                    UsersClient client = ApiClient.getClient().create(UsersClient.class);
                     Call<Users> call = client.login(users);
                     Log.d("homie", "onClick: " + call.toString());
                     disableControls();

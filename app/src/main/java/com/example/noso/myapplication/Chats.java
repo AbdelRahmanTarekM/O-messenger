@@ -14,11 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.Interfaces.UsersClient;
 import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.Users;
-import com.example.noso.myapplication.services.NewConversation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +24,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Chats extends AppCompatActivity {
     FloatingActionButton fab;
@@ -49,23 +45,20 @@ public class Chats extends AppCompatActivity {
         String xauth = session.returnxAuth();
 
         listView = findViewById(R.id.chats);
-        errorLayout=findViewById(R.id.layout_error_chats);
+        errorLayout = findViewById(R.id.layout_error_chats);
 
-        PreferenceManager.xAuthToken=xauth;
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("https://thawing-fortress-83069.herokuapp.com/")
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-        FriendsClient client = retrofit.create(FriendsClient.class);
+        PreferenceManager.xAuthToken = xauth;
+
+        FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
         userCall = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + userCall.toString());
         userCall.enqueue(new Callback<List<Friends>>() {
             @Override
             public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
                 List<Friends> users = response.body();
-                if(users==null || users.size()==0){
+                if (users == null || users.size() == 0) {
                     errorLayout.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(Chats.this, android.R.layout.simple_list_item_1);
                     List<String> names = new ArrayList<String>();
                     for (int i = 0; i < users.size(); i++) {
@@ -83,6 +76,7 @@ public class Chats extends AppCompatActivity {
                     });
                 }
             }
+
             @Override
             public void onFailure(Call<List<Friends>> call, Throwable t) {
                 Toast.makeText(Chats.this, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -124,7 +118,7 @@ public class Chats extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if(userCall.isExecuted())
+        if (userCall.isExecuted())
             userCall.cancel();
 
     }
