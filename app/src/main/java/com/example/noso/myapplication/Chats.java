@@ -38,8 +38,6 @@ public class Chats extends AppCompatActivity {
         setContentView(R.layout.activity_chats);
         android.support.v7.widget.Toolbar myToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.chats_toolbar);
         myToolbar.setTitle("Chats");
-/*        myToolbar.setBackgroundColor(R.color.navigationBarColor);
-        myToolbar.setTitleTextColor(R.color.windowBackground);*/
         setSupportActionBar(myToolbar);
         session = new PreferenceManager(getApplicationContext());
         String xauth = session.returnxAuth();
@@ -87,7 +85,7 @@ public class Chats extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(Chats.this, ChatScreen.class);
+                Intent i = new Intent(Chats.this, ContactsActivity.class);
                 startActivity(i);
             }
         });

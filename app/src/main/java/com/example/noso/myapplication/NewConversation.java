@@ -1,4 +1,4 @@
-package com.example.noso.myapplication.services;
+package com.example.noso.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,12 +12,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.noso.myapplication.ChatScreen;
+import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.PreferenceManager;
-import com.example.noso.myapplication.R;
 import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +22,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewConversation extends AppCompatActivity {
     FloatingActionButton fab;
@@ -47,11 +42,8 @@ public class NewConversation extends AppCompatActivity {
         fab = findViewById(R.id.searchFriend);
         search = findViewById(R.id.newFriend);
 
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
-                .addConverterFactory(GsonConverterFactory.create());
-        Retrofit retrofit = builder.build();
-        FriendsClient client = retrofit.create(FriendsClient.class);
+
+        FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
         Call<List<Friends>> call = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + call.toString());
         call.enqueue(new Callback<List<Friends>>() {

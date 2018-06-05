@@ -21,6 +21,11 @@ public class Users {
 
     }
 
+    public Users(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
     public Users() {
     }
 

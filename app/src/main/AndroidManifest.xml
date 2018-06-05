@@ -43,7 +43,7 @@
         <activity android:name=".WelcomeActivity" />
         <activity android:name=".Chats" />
         <activity
-            android:name=".services.NewConversation"
+            android:name=".NewConversation"
             android:label="@string/title_activity_new_conversation"
             android:theme="@style/MyMaterialTheme" />
         <activity android:name=".Setting" />
@@ -52,7 +52,8 @@
             android:exported="true"
             android:label="@string/title_activity_registration"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".AddFriendActivity"></activity>
+        <activity android:name=".AddFriendActivity" />
+        <activity android:name=".ContactsActivity"></activity>
     </application>
 
 </manifest>

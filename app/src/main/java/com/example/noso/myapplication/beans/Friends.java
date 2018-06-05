@@ -5,11 +5,11 @@ package com.example.noso.myapplication.beans;
  */
 
 public class Friends {
-    private  String username;
+    private String username;
     private String _id;
     private String userId;
 
-    public Friends(String name, String userName, String ID,String userId) {
+    public Friends(String userName, String ID, String userId) {
         this.username = userName;
         this._id = ID;
         this.userId = userId;
