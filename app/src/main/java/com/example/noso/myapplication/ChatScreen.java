@@ -153,14 +153,14 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
-
-        } else {
-            Snackbar.make(activity_chat_screen, "Welcome " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), Snackbar.LENGTH_SHORT).show();
-            displayChatMessage();
-
-        }
+//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+//            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
+//
+//        } else {
+//            Snackbar.make(activity_chat_screen, "Welcome " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), Snackbar.LENGTH_SHORT).show();
+//            displayChatMessage();
+//
+//        }
 
         input.addTextChangedListener(new TextWatcher() {
             @Override

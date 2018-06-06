@@ -44,6 +44,7 @@ public class FriendsList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         parentView = inflater.inflate(R.layout.friends_list, container, false);
         listView = parentView.findViewById(R.id.friendsList);
+        Toast.makeText(getActivity(),"Click",Toast.LENGTH_LONG).show();
         errorLayout = parentView.findViewById(R.id.layout_error_friends);
         initView();
         return parentView;
