@@ -9,7 +9,8 @@
     <color name="loginRegistrationBackground">#00bcd4</color>
     <color name="elevatedYellowButton">#f4ff81</color>
     <color name="hint_gray">#4dd0e1</color>
-
+    <color name="viewBg">#f1f5f8</color>
+    <color name="album_title">#4c4c4c</color>
 
     <color name="bg_screen1">#5e7aa9</color>
     <color name="bg_screen2">#8cb8c9</color>

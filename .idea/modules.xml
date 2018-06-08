@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://G:/O/MyApplication5/GraduationProject.iml" filepath="G:/O/MyApplication5/GraduationProject.iml" />
-      <module fileurl="file://C:/Users/omnia/OneDrive/Desktop/GP/O-messenger-master/GraduationProject.iml" filepath="C:/Users/omnia/OneDrive/Desktop/GP/O-messenger-master/GraduationProject.iml" />
-      <module fileurl="file://G:/O/MyApplication5/GraduationProject-ocr.iml" filepath="G:/O/MyApplication5/GraduationProject-ocr.iml" />
-      <module fileurl="file://C:/Users/omnia/OneDrive/Desktop/GP/O-messenger-master/MyApplication5.iml" filepath="C:/Users/omnia/OneDrive/Desktop/GP/O-messenger-master/MyApplication5.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/O-messenger.iml" filepath="$PROJECT_DIR$/.idea/O-messenger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/O-messenger-application-styling.iml" filepath="$PROJECT_DIR$/O-messenger-application-styling.iml" />
-      <module fileurl="file://C:/Users/omnia/OneDrive/Desktop/GP/O-messenger/O-messenger-application-styling.iml" filepath="C:/Users/omnia/OneDrive/Desktop/GP/O-messenger/O-messenger-application-styling.iml" />
-      <module fileurl="file://C:/Users/omnia/OneDrive/Desktop/GP/O-messenger/O-messenger-master.iml" filepath="C:/Users/omnia/OneDrive/Desktop/GP/O-messenger/O-messenger-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/O-messenger.iml" filepath="$PROJECT_DIR$/O-messenger.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:/Users/omnia/OneDrive/Desktop/GP/O-messenger/app/app.iml" filepath="C:/Users/omnia/OneDrive/Desktop/GP/O-messenger/app/app.iml" />
     </modules>
   </component>
 </project>

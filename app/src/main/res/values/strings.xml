@@ -68,4 +68,9 @@
     <string name="welcome">Welcome</string>
     <string name="register">Register</string>
 
+    <string name="Approve"> Approve Request</string>
+    <string name="Reject">Reject Request</string>
+    <string name="backdrop_title">Friend Requests</string>
+    <string name="backdrop_subtitle">Top 20</string>
+
 </resources>
