@@ -241,7 +241,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                             transferObserverListener(observer);
                         }
                         String xAuth = response.headers().get("x-auth");
-                        session.LoginSession(Username, Password, xAuth);
+                        session.LoginSession(users.getUsername(), xAuth,users.getEmail(),users.getId());
                         Intent i = new Intent(RegistrationActivity.this, WelcomeActivity.class);
                         startActivity(i);
                         finish();

@@ -12,18 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.noso.myapplication.Interfaces.ApiClient;
-import com.example.noso.myapplication.Interfaces.FriendsClient;
+import com.example.noso.myapplication.beans.Conversation;
 import com.example.noso.myapplication.beans.Friends;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Chats extends AppCompatActivity {
     FloatingActionButton fab;
@@ -31,6 +26,7 @@ public class Chats extends AppCompatActivity {
     private ListView listView;
     Call<List<Friends>> userCall;
     LinearLayout errorLayout;
+    String TAG = "Homie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,39 +43,41 @@ public class Chats extends AppCompatActivity {
 
         PreferenceManager.xAuthToken = xauth;
 
-        FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
-        userCall = client.friends(PreferenceManager.xAuthToken);
-        Log.d("homie", "onClick: " + userCall.toString());
-        userCall.enqueue(new Callback<List<Friends>>() {
-            @Override
-            public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
-                List<Friends> users = response.body();
-                if (users == null || users.size() == 0) {
-                    errorLayout.setVisibility(View.VISIBLE);
-                } else {
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(Chats.this, android.R.layout.simple_list_item_1);
-                    List<String> names = new ArrayList<String>();
-                    for (int i = 0; i < users.size(); i++) {
-                        names.add(users.get(i).getUserName());
-                    }
-                    arrayAdapter.addAll(names);
-                    listView.setAdapter(arrayAdapter);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            Toast.makeText(Chats.this, "Clicked item!", Toast.LENGTH_LONG).show();
-                            Intent Q = new Intent(Chats.this, ChatScreen.class);
-                            startActivity(Q);
-                        }
-                    });
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<Friends>> call, Throwable t) {
-                Toast.makeText(Chats.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+//        FriendsClient client = ApiClient.getClient().create(FriendsClient.class);
+//        userCall = client.friends(PreferenceManager.xAuthToken);
+//        Log.d("homie", "onClick: " + userCall.toString());
+//        userCall.enqueue(new Callback<List<Friends>>() {
+//            @Override
+//            public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
+//                List<Friends> users = response.body();
+//                if (users == null || users.size() == 0) {
+//                    errorLayout.setVisibility(View.VISIBLE);
+//                } else {
+//                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(Chats.this, android.R.layout.simple_list_item_1);
+//                    List<String> names = new ArrayList<String>();
+//                    for (int i = 0; i < users.size(); i++) {
+//                        names.add(users.get(i).getUserName());
+//                    }
+//                    arrayAdapter.addAll(names);
+//                    listView.setAdapter(arrayAdapter);
+//                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                            Toast.makeText(Chats.this, "Clicked item!", Toast.LENGTH_LONG).show();
+//                            Intent Q = new Intent(Chats.this, ChatScreen.class);
+//                            startActivity(Q);
+//                        }
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Friends>> call, Throwable t) {
+//                Toast.makeText(Chats.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         fab = findViewById(R.id.newConversation);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -116,10 +114,47 @@ public class Chats extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (userCall.isExecuted())
-            userCall.cancel();
+//        if (userCall.isExecuted())
+//            userCall.cancel();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
 
+        if (PreferenceManager.conversations != null) {
+            Log.e("Homie", String.valueOf(PreferenceManager.conversations.getConversations().size()));
+            if (PreferenceManager.conversations.getConversations().size() != 0) {
+                for (Conversation c : PreferenceManager.conversations.getConversations()) {
+                    StringBuilder builder = new StringBuilder();
+                    for (Friends f : c.getUsers()) {
+                        if (!f.getUserName().equals(PreferenceManager.username)) {
+                            Log.e(TAG, "Preference: "+PreferenceManager.username );
+                            Log.e(TAG, "Conversation: "+f.getUserName() );
+                            builder.append(f.getUserName());
+                            builder.append(" ");
+                            Log.e(TAG, "Username: " + f.getUserName());
+                        }
+                    }
+                    stringArrayAdapter.add(builder.toString());
+                    Log.e(TAG, "Builder Value: " + builder.toString());
+                }
+
+                listView.setAdapter(stringArrayAdapter);
+                listView.setVisibility(View.VISIBLE);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(Chats.this, ChatScreen.class);
+                        intent.putExtra("id", PreferenceManager.conversations.getConversations().get(position).get_id());
+                        startActivity(intent);
+                    }
+                });
+            }
+        } else {
+            errorLayout.setVisibility(View.VISIBLE);
+        }
+    }
 }

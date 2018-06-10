@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -33,6 +34,9 @@ import android.widget.Toast;
 import com.example.noso.myapplication.beans.ChatMessage;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
@@ -40,15 +44,22 @@ import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 
 public class ChatScreen extends AppCompatActivity implements View.OnClickListener {
+
     public static final int GET_FROM_GALLERY = 3;
     public static final int GET_FROM_CAMERA = 4;
     private static int SIGN_IN_REQUEST_CODE = 1;
-    private LinearLayout activity_chat_screen, messageBoxLayout, revealingLayout;
+    private RelativeLayout activity_chat_screen;
+    private LinearLayout messageBoxLayout, revealingLayout;
     private RelativeLayout relGesture, relFile, relCamera;
+    private String uri = "http://10.0.2.2:3001/",conversationId="";
 
     FloatingActionButton fab, cameraBtn, fileBtn, gestureBtn;
     EditText input;
@@ -56,25 +67,14 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
     private FirebaseListAdapter<ChatMessage> adapter;
     Animation moveIn, moveOut, moveInFile, moveInGesture, moveInCamera;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_Sign_out) {
-            AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                    Snackbar.make(activity_chat_screen, "You have been signed out. ", Snackbar.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
-        }
-        return true;
+    private Socket mSocket;
+    {
+     try {
+         mSocket = IO.socket(uri);
+     }catch (URISyntaxException e){}
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.message_menu, menu);
-        return true;
-    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,6 +108,28 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
     }
 
 
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String username;
+                    String message;
+                    try {
+                        username = data.getString("username");
+                        message = data.getString("message");
+                    } catch (JSONException e) {
+                        return;
+                    }
+
+                    //TODO implement message receiving and parsing
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +147,9 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         messageBoxLayout = findViewById(R.id.message_box_layout);
 
 
+        mSocket.on("new message", onNewMessage);
+        mSocket.connect();
+
         moveIn = AnimationUtils.loadAnimation(this, R.anim.move_from_right);
         moveOut = AnimationUtils.loadAnimation(this, R.anim.move_out_right);
         moveInCamera = AnimationUtils.loadAnimation(this, R.anim.move_in_camera);
@@ -139,9 +164,12 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (chatMode) {
-                    FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(input.getText().toString(),
-                            FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
+                if (true) {
+                    String message = input.getText().toString().trim();
+                    if (TextUtils.isEmpty(message)) {
+                        return;
+                    }
+                    mSocket.emit("createMessage", message);
                     input.setText("");
                 } else {
                     revealingLayout.setVisibility(View.VISIBLE);
@@ -153,14 +181,7 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
-//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-//            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
-//
-//        } else {
-//            Snackbar.make(activity_chat_screen, "Welcome " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), Snackbar.LENGTH_SHORT).show();
-//            displayChatMessage();
-//
-//        }
+
 
         input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -185,10 +206,20 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
+
+        String conversationId=getIntent().getStringExtra("id");
+//        JSONObject socketParams=new JSONObject();
+//        try {
+//            socketParams.put("conversationId",conversationId);
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        mSocket.emit("join",conversationId);
     }
 
     private void displayChatMessage() {
-        ListView ListOfMessages = findViewById(R.id.list_of_messages);
+        /*ListView ListOfMessages = findViewById(R.id.list_of_messages);
         adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.list_view, FirebaseDatabase.getInstance().getReference()) {
             @Override
             protected void populateView(View v, ChatMessage model, int position) {
@@ -201,7 +232,7 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 MessageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessagetime()));
             }
         };
-        ListOfMessages.setAdapter(adapter);
+        ListOfMessages.setAdapter(adapter);*/
     }
 
     @Override
@@ -237,5 +268,13 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         }
         revealingLayout.startAnimation(moveOut);
         messageBoxLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+        mSocket.off("new message", onNewMessage);
     }
 }

@@ -90,6 +90,9 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                                     public void onResponse(Call<Conversation> call, Response<Conversation> response) {
                                         if (response.isSuccessful()) {
                                             //TODO: add conversation to shared preferences
+                                            Conversation conversation = response.body();
+                                            PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
+                                            preferenceManager.addConversation(conversation);
                                             Intent i = new Intent(ContactsActivity.this, ChatScreen.class);
                                             startActivity(i);
                                             finish();
