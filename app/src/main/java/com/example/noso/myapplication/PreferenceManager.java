@@ -10,6 +10,8 @@ import com.example.noso.myapplication.beans.Conversation;
 import com.example.noso.myapplication.beans.ConversationsList;
 import com.google.gson.Gson;
 
+import java.util.List;
+
 
 /**
  * Created by NOSO on 11/29/2017.
@@ -103,5 +105,10 @@ public class PreferenceManager extends AppCompatActivity {
 
     }
 
+    public static void setConversations(List<Conversation> conversations) {
+        PreferenceManager.conversations.getConversations().clear();
+        PreferenceManager.conversations.getConversations().addAll(conversations);
+
+    }
 }
 

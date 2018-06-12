@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (users != null) {
 
-                                session.LoginSession(users.getUsername(), xAuth, users.getEmail(), users.getId());
+                                session.LoginSession(users.getEmail(), xAuth, users.getUsername(), users.getId());
                                 Log.d("O-messenger", "x-auth: " + xAuth);
 
                                 Toast.makeText(getApplicationContext(), "Login Successful !", Toast.LENGTH_LONG).show();

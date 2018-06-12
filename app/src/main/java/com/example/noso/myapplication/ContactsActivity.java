@@ -94,6 +94,7 @@ public class ContactsActivity extends AppCompatActivity implements View.OnClickL
                                             PreferenceManager preferenceManager = new PreferenceManager(getApplicationContext());
                                             preferenceManager.addConversation(conversation);
                                             Intent i = new Intent(ContactsActivity.this, ChatScreen.class);
+                                            i.putExtra("id", conversation.get_id());
                                             startActivity(i);
                                             finish();
                                         }

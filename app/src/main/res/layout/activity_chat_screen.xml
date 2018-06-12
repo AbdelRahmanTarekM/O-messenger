@@ -2,11 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.noso.myapplication.ChatScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/space"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    tools:context="com.example.noso.myapplication.ChatScreen">
+
     <RelativeLayout
         android:id="@+id/chat_screen"
         android:layout_width="match_parent"
@@ -18,8 +19,9 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="42dp"
             android:divider="@android:color/transparent"
-            android:dividerHeight="16dp"></ListView>
-
+            android:dividerHeight="16dp"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll" />
 
 
         <!--<android.support.design.widget.FloatingActionButton
@@ -42,31 +44,32 @@
                 android:id="@+id/message_box_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="bottom"
                 android:background="@color/loginRegistrationBackground"
+                android:gravity="bottom"
+                android:orientation="horizontal"
                 android:weightSum="1.0">
+
                 <EditText
                     android:id="@+id/input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:layout_weight="0.85"
-                    android:layout_marginRight="10dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.85"
+                    android:background="@drawable/circular_txt"
                     android:hint="Type a message.."
                     android:padding="10dp"
-                    android:textColorHint="@android:color/white"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/circular_txt" />
+                    android:textColorHint="@android:color/white"
+                    android:textSize="16sp" />
 
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/sendFab"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:clickable="true"
                     android:layout_weight="0.4"
+                    android:clickable="true"
                     android:src="@drawable/ic_add_chat"
                     android:tint="@color/loginRegistrationBackground"
                     app:backgroundTint="@android:color/white"
@@ -78,11 +81,11 @@
                 android:id="@+id/revealingLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:background="@android:color/white"
                 android:gravity="center_vertical"
-                android:paddingRight="25dp"
+                android:orientation="horizontal"
                 android:paddingLeft="25dp"
+                android:paddingRight="25dp"
                 android:visibility="gone"
                 android:weightSum="9">
 
@@ -92,6 +95,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:gravity="center">
+
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/btn_camera"
                         android:layout_width="40dp"
@@ -99,7 +103,7 @@
                         android:src="@drawable/ic_capture"
                         android:tint="#FFF"
                         app:backgroundTint="@android:color/darker_gray"
-                        app:fabSize="mini"/>
+                        app:fabSize="mini" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -108,6 +112,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:gravity="center">
+
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/btn_gesture"
                         android:layout_width="40dp"
@@ -115,9 +120,8 @@
                         android:src="@drawable/ic_hand_wave"
                         android:tint="#FFF"
                         app:backgroundTint="@android:color/holo_red_light"
-                        app:fabSize="mini"/>
+                        app:fabSize="mini" />
                 </RelativeLayout>
-
 
 
                 <RelativeLayout
@@ -126,14 +130,15 @@
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:gravity="center">
+
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/btn_file"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:src="@drawable/ic_file"
-                        app:backgroundTint="@android:color/black"
                         android:tint="#0F0"
-                        app:fabSize="mini"/>
+                        app:backgroundTint="@android:color/black"
+                        app:fabSize="mini" />
                 </RelativeLayout>
             </LinearLayout>
 

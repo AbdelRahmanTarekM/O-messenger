@@ -5,7 +5,7 @@ import java.util.List;
 public class Conversation {
 
     private List<Friends> users;
-    private List<String> messages;
+    private List<Message> messages;
     private String _id;
 
     public List<Friends> getUsers() {
@@ -14,14 +14,6 @@ public class Conversation {
 
     public void setUsers(List<Friends> users) {
         this.users = users;
-    }
-
-    public List<String> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<String> messages) {
-        this.messages = messages;
     }
 
     public String get_id() {

@@ -43,5 +43,11 @@
         <item>@color/dot_dark_screen4</item>
     </array>
 
+    <color name="bg_msg_you">#5eb964</color>
+    <color name="bg_msg_from">#e5e7eb</color>
+    <color name="lblFromName">#FFF</color>
+    <color name="title_gray">#434343</color>
+    <color name="white">#ffffff</color>
+
 
 </resources>
