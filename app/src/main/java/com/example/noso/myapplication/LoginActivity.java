@@ -18,13 +18,11 @@ import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Users;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -54,9 +52,7 @@ public class LoginActivity extends AppCompatActivity {
         session = new PreferenceManager(getApplicationContext());
 
 
-
-        if(session.isLoggedIn())
-        {
+        if (session.isLoggedIn()) {
             Intent i = new Intent(LoginActivity.this, Chats.class);
 
             startActivity(i);
@@ -125,7 +121,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
                             if (users != null) {
-                                session.LoginSession(Username, Password, xAuth);
+
+                                session.LoginSession(users.getEmail(), xAuth, users.getUsername(), users.getId());
                                 Log.d("O-messenger", "x-auth: " + xAuth);
 
                                 Toast.makeText(getApplicationContext(), "Login Successful !", Toast.LENGTH_LONG).show();

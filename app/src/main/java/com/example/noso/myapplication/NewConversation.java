@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.beans.Friends;
+import com.example.noso.myapplication.models.Friends;
 
 import java.util.ArrayList;
 import java.util.List;

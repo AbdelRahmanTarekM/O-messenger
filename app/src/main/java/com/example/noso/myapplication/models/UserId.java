@@ -1,4 +1,4 @@
-package com.example.noso.myapplication.beans;
+package com.example.noso.myapplication.models;
 
 /**
  * Created by abdelrahmantarek on 3/9/18.

@@ -9,17 +9,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,54 +23,62 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.noso.myapplication.beans.ChatMessage;
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.noso.myapplication.Interfaces.ApiClient;
+import com.example.noso.myapplication.Interfaces.ConversationsClient;
+import com.example.noso.myapplication.adapters.MessageAdapter;
+import com.example.noso.myapplication.models.Message;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatScreen extends AppCompatActivity implements View.OnClickListener {
+
     public static final int GET_FROM_GALLERY = 3;
     public static final int GET_FROM_CAMERA = 4;
+    private static final String TAG = "Homie";
     private static int SIGN_IN_REQUEST_CODE = 1;
-    private LinearLayout activity_chat_screen, messageBoxLayout, revealingLayout;
+    private RelativeLayout activity_chat_screen;
+    private LinearLayout messageBoxLayout, revealingLayout;
     private RelativeLayout relGesture, relFile, relCamera;
+    private String uri = "http://192.168.1.103:3001/", conversationId = "5b1d91c5f25ddb39805bb62c";
+
+    private MessageAdapter adapter;
+    private List<Message> messages;
+    private ListView messagesLV;
 
     FloatingActionButton fab, cameraBtn, fileBtn, gestureBtn;
     EditText input;
     boolean chatMode;
-    private FirebaseListAdapter<ChatMessage> adapter;
     Animation moveIn, moveOut, moveInFile, moveInGesture, moveInCamera;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_Sign_out) {
-            AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                    Snackbar.make(activity_chat_screen, "You have been signed out. ", Snackbar.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
+    private Socket mSocket;
+
+    {
+        try {
+            mSocket = IO.socket(uri);
+        } catch (URISyntaxException e) {
         }
-        return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.message_menu, menu);
-        return true;
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -108,6 +112,43 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
     }
 
 
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = null; //(JSONObject) args[0];
+                    try {
+                        data = new JSONObject((String) args[0]);
+                        Log.e("Homie", "run: success");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    String message;
+                    int sent;
+                    try {
+                        String senderId, senderName, payload, conversationId;
+                        int type = data.getInt("type");
+                        senderId = data.getString("senderId");
+                        senderName = data.getString("senderName");
+                        payload = data.getString("payload");
+                        conversationId = data.getString("conversationId");
+
+                        Message message1 = new Message(senderId, senderName, type, payload, conversationId);
+                        messages.add(message1);
+                        adapter.notifyDataSetChanged();
+//                        Toast.makeText(ChatScreen.this, payload, Toast.LENGTH_LONG).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.e(TAG, "run: ", e);
+                        return;
+                    }
+                }
+            });
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +164,34 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         relGesture = findViewById(R.id.rel_gesture);
         revealingLayout = findViewById(R.id.revealingLayout);
         messageBoxLayout = findViewById(R.id.message_box_layout);
+        messagesLV = findViewById(R.id.list_of_messages);
+        messages = new ArrayList<>();
 
+        conversationId = getIntent().getStringExtra("id");
+
+        ConversationsClient client = ApiClient.getClient().create(ConversationsClient.class);
+        Call<List<Message>> listCall = client.getMessages(conversationId);
+        listCall.enqueue(new Callback<List<Message>>() {
+            @Override
+            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+
+                if (response.isSuccessful()) {
+                    messages = response.body();
+                    adapter = new MessageAdapter(ChatScreen.this, messages);
+                    messagesLV.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Message>> call, Throwable t) {
+
+            }
+        });
+
+
+
+        mSocket.on("newMessage", onNewMessage);
+        mSocket.connect();
 
         moveIn = AnimationUtils.loadAnimation(this, R.anim.move_from_right);
         moveOut = AnimationUtils.loadAnimation(this, R.anim.move_out_right);
@@ -140,8 +208,14 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onClick(View view) {
                 if (chatMode) {
-                    FirebaseDatabase.getInstance().getReference().push().setValue(new ChatMessage(input.getText().toString(),
-                            FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
+                    String message = input.getText().toString().trim();
+                    if (TextUtils.isEmpty(message)) {
+                        return;
+                    }
+                    Message message1 = new Message(PreferenceManager.id, PreferenceManager.username, 1, message, conversationId);
+                    Gson gson = new Gson();
+                    String jsonMessage = gson.toJson(message1, Message.class);
+                    mSocket.emit("createMessage", jsonMessage);
                     input.setText("");
                 } else {
                     revealingLayout.setVisibility(View.VISIBLE);
@@ -153,14 +227,7 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_REQUEST_CODE);
 
-        } else {
-            Snackbar.make(activity_chat_screen, "Welcome " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), Snackbar.LENGTH_SHORT).show();
-            displayChatMessage();
-
-        }
 
         input.addTextChangedListener(new TextWatcher() {
             @Override
@@ -185,23 +252,8 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
-    }
 
-    private void displayChatMessage() {
-        ListView ListOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.list_view, FirebaseDatabase.getInstance().getReference()) {
-            @Override
-            protected void populateView(View v, ChatMessage model, int position) {
-                TextView MessageText, MessageUser, MessageTime;
-                MessageText = v.findViewById(R.id.message_text);
-                MessageUser = v.findViewById(R.id.message_user);
-                MessageTime = v.findViewById(R.id.message_time);
-                MessageText.setText(model.getMessagetext());
-                MessageUser.setText(model.getMessageuser());
-                MessageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessagetime()));
-            }
-        };
-        ListOfMessages.setAdapter(adapter);
+        mSocket.emit("join", conversationId);
     }
 
     @Override
@@ -237,5 +289,13 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         }
         revealingLayout.startAnimation(moveOut);
         messageBoxLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+        mSocket.off("new message", onNewMessage);
     }
 }
