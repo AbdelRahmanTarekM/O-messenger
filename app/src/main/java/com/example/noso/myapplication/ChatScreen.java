@@ -28,7 +28,7 @@ import android.widget.Toast;
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.ConversationsClient;
 import com.example.noso.myapplication.adapters.MessageAdapter;
-import com.example.noso.myapplication.beans.Message;
+import com.example.noso.myapplication.models.Message;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -59,7 +59,7 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
     private RelativeLayout activity_chat_screen;
     private LinearLayout messageBoxLayout, revealingLayout;
     private RelativeLayout relGesture, relFile, relCamera;
-    private String uri = "http://192.168.43.43:3001/", conversationId = "5b1d91c5f25ddb39805bb62c";
+    private String uri = "http://192.168.1.103:3001/", conversationId = "5b1d91c5f25ddb39805bb62c";
 
     private MessageAdapter adapter;
     private List<Message> messages;
@@ -135,9 +135,6 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                         payload = data.getString("payload");
                         conversationId = data.getString("conversationId");
 
-                        Log.e(TAG, "run: id: " + payload);
-                        Log.e(TAG, "run: senderName: " + senderName + " senderId: " + senderId);
-
                         Message message1 = new Message(senderId, senderName, type, payload, conversationId);
                         messages.add(message1);
                         adapter.notifyDataSetChanged();
@@ -147,7 +144,6 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                         Log.e(TAG, "run: ", e);
                         return;
                     }
-                    //TODO implement message receiving and parsing
                 }
             });
         }
@@ -172,21 +168,17 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         messages = new ArrayList<>();
 
         conversationId = getIntent().getStringExtra("id");
-        //TODO: populate messages with retrofit
 
         ConversationsClient client = ApiClient.getClient().create(ConversationsClient.class);
         Call<List<Message>> listCall = client.getMessages(conversationId);
         listCall.enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                Log.e(TAG, "getMessages: code: " + response.code());
-                Log.e(TAG, "ConversationID: " + conversationId);
 
                 if (response.isSuccessful()) {
                     messages = response.body();
                     adapter = new MessageAdapter(ChatScreen.this, messages);
                     messagesLV.setAdapter(adapter);
-                    Log.e(TAG, "messages size: " + messages.size());
                 }
             }
 
@@ -261,33 +253,7 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
             }
         });
 
-        //TODO: remove hardcoded conversationID
-//        String conversationId = "5b1d91c5f25ddb39805bb62c";
-//        JSONObject socketParams=new JSONObject();
-//        try {
-//            socketParams.put("conversationId",conversationId);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
         mSocket.emit("join", conversationId);
-    }
-
-    private void displayChatMessage() {
-        /*ListView ListOfMessages = findViewById(R.id.list_of_messages);
-        adapter = new FirebaseListAdapter<ChatMessage>(this, ChatMessage.class, R.layout.list_view, FirebaseDatabase.getInstance().getReference()) {
-            @Override
-            protected void populateView(View v, ChatMessage model, int position) {
-                TextView MessageText, MessageUser, MessageTime;
-                MessageText = v.findViewById(R.id.message_text);
-                MessageUser = v.findViewById(R.id.message_user);
-                MessageTime = v.findViewById(R.id.message_time);
-                MessageText.setText(model.getMessagetext());
-                MessageUser.setText(model.getMessageuser());
-                MessageTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", model.getMessagetime()));
-            }
-        };
-        ListOfMessages.setAdapter(adapter);*/
     }
 
     @Override

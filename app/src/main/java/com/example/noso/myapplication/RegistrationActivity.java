@@ -31,21 +31,21 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Users;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "homie";
+    private static final String TAG = "Homie";
     String path;
     AmazonS3Client s3;
     TransferUtility transferUtility;
@@ -221,11 +221,11 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             validatePassword();
             validateConfirmPassword();
             if (mailGood && passGood && rPassGood && uNameGood) {
-                final String First, Email, Password, Username;
+                final String Email, Password, Username;
                 Email = mail.getText().toString();
                 Password = pass.getText().toString();
                 Username = uName.getText().toString();
-                Users users = new Users(Username, Email, Password);
+                Users users = new Users(Username, Email, Password, "");
 
                 UsersClient client = ApiClient.getClient().create(UsersClient.class);
                 Call<Users> call = client.signup(users);
@@ -236,12 +236,13 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                     public void onResponse(Call<Users> call, Response<Users> response) {
                         enableControls();
                         Users users = response.body();
+                        String xAuth = response.headers().get("x-auth");
+                        session.LoginSession(users.getEmail(), xAuth, users.getUsername(), users.getId());
                         if (path != null && users != null) {
                             TransferObserver observer = transferUtility.upload(users.getId(), new File(path));
                             transferObserverListener(observer);
                         }
-                        String xAuth = response.headers().get("x-auth");
-                        session.LoginSession(users.getEmail(), xAuth,users.getUsername(),users.getId());
+
                         Intent i = new Intent(RegistrationActivity.this, WelcomeActivity.class);
                         startActivity(i);
                         finish();
@@ -332,6 +333,10 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     Log.d("MainActivity", "Done");
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_WEEK,7);
+                    String displayPicture = s3.generatePresignedUrl("omessenger-userfiles-mobilehub-792948277/public", PreferenceManager.id, calendar.getTime()).toString();
+                    Log.e(TAG, "completed ---- URL: " + displayPicture);
                 }
             }
 
@@ -340,7 +345,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
                 int percentDone = (int) percentDonef;
 
-                Log.d("MainActivity", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
+                Log.e("MainActivity", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
             }
 
             @Override

@@ -17,9 +17,9 @@ import com.example.noso.myapplication.Interfaces.ConversationsClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
 import com.example.noso.myapplication.adapters.ContactAdapter;
-import com.example.noso.myapplication.beans.Conversation;
-import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Conversation;
+import com.example.noso.myapplication.models.Friends;
+import com.example.noso.myapplication.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;

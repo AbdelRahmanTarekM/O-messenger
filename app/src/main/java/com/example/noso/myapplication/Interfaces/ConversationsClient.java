@@ -1,15 +1,13 @@
 package com.example.noso.myapplication.Interfaces;
 
-import com.example.noso.myapplication.beans.Conversation;
-import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.Message;
+import com.example.noso.myapplication.models.Conversation;
+import com.example.noso.myapplication.models.Message;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 

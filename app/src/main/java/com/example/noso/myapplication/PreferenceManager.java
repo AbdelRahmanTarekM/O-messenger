@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.noso.myapplication.beans.Conversation;
-import com.example.noso.myapplication.beans.ConversationsList;
+import com.example.noso.myapplication.models.Conversation;
+import com.example.noso.myapplication.models.ConversationsList;
 import com.google.gson.Gson;
 
 import java.util.List;

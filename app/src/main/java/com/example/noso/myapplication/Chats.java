@@ -15,8 +15,8 @@ import android.widget.ListView;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.ConversationsClient;
-import com.example.noso.myapplication.beans.Conversation;
-import com.example.noso.myapplication.beans.Friends;
+import com.example.noso.myapplication.models.Conversation;
+import com.example.noso.myapplication.models.Friends;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class Chats extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats);
-        android.support.v7.widget.Toolbar myToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.chats_toolbar);
+        android.support.v7.widget.Toolbar myToolbar = findViewById(R.id.chats_toolbar);
         myToolbar.setTitle("Chats");
         setSupportActionBar(myToolbar);
         session = new PreferenceManager(getApplicationContext());

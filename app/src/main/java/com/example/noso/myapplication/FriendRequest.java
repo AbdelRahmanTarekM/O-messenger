@@ -15,9 +15,9 @@ import android.widget.ListView;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.UserId;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Friends;
+import com.example.noso.myapplication.models.UserId;
+import com.example.noso.myapplication.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +25,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Users: special

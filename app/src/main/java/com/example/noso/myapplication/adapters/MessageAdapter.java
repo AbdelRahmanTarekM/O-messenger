@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.noso.myapplication.PreferenceManager;
 import com.example.noso.myapplication.R;
-import com.example.noso.myapplication.beans.Message;
+import com.example.noso.myapplication.models.Message;
 
 import java.util.List;
 

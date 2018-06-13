@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.noso.myapplication.R;
-import com.example.noso.myapplication.beans.Friends;
+import com.example.noso.myapplication.models.Friends;
 
 import java.util.List;
 

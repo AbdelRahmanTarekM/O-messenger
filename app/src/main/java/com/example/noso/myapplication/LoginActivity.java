@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.UsersClient;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Users;
 
 import retrofit2.Call;
 import retrofit2.Callback;

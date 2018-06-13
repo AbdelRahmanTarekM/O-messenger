@@ -1,4 +1,4 @@
-package com.example.noso.myapplication.beans;
+package com.example.noso.myapplication.models;
 
 /**
  * Created by omnia on 2/10/2018.

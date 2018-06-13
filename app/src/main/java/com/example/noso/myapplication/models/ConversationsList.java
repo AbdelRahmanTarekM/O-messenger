@@ -1,4 +1,4 @@
-package com.example.noso.myapplication.beans;
+package com.example.noso.myapplication.models;
 
 import java.util.ArrayList;
 import java.util.List;

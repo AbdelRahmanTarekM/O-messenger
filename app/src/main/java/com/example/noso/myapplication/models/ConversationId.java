@@ -1,4 +1,4 @@
-package com.example.noso.myapplication.beans;
+package com.example.noso.myapplication.models;
 
 public class ConversationId {
     private String id;

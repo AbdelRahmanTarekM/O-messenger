@@ -1,9 +1,9 @@
 package com.example.noso.myapplication.Interfaces;
 
-import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.UserId;
-import com.example.noso.myapplication.beans.UserName;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Friends;
+import com.example.noso.myapplication.models.UserId;
+import com.example.noso.myapplication.models.UserName;
+import com.example.noso.myapplication.models.Users;
 
 import java.util.List;
 

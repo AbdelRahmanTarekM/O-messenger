@@ -1,6 +1,6 @@
 package com.example.noso.myapplication.Interfaces;
 
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.Users;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

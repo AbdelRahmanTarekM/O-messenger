@@ -1,4 +1,4 @@
-package com.example.noso.myapplication.beans;
+package com.example.noso.myapplication.models;
 
 /**
  * Created by omnia on 2/10/2018.
@@ -11,12 +11,14 @@ public class Users {
     private String email;
     private String password;
     private String fcm_token;
+    private String displayPicture;
 
-    public Users(String username, String email, String password) {
+    public Users(String username, String email, String password,String displayPicture) {
 
         this.username = username;
         this.email = email;
         this.password = password;
+        this.displayPicture = displayPicture;
         fcm_token = "123ABC";
 
     }
@@ -76,5 +78,13 @@ public class Users {
 
     public void setFcm_token(String fcm_token) {
         this.fcm_token = fcm_token;
+    }
+
+    public String getDisplayPicture() {
+        return displayPicture;
+    }
+
+    public void setDisplayPicture(String displayPicture) {
+        this.displayPicture = displayPicture;
     }
 }
