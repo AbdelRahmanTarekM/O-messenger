@@ -1,14 +1,10 @@
 package com.example.noso.myapplication;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -20,25 +16,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.beans.Friends;
-import com.example.noso.myapplication.beans.UserId;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.adapters.RequestAdapter;
+import com.example.noso.myapplication.models.Friends;
 import com.example.noso.myapplication.beans.RecyclerTouchListener;
-
-
+import com.example.noso.myapplication.models.UserId;
+import com.example.noso.myapplication.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +35,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Users: special

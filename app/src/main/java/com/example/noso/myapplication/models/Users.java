@@ -1,5 +1,7 @@
 package com.example.noso.myapplication.models;
 
+import com.example.noso.myapplication.models.Friends;
+
 /**
  * Created by omnia on 2/10/2018.
  */

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,19 +14,17 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.FriendsClient;
-import com.example.noso.myapplication.beans.Friends;
+import com.example.noso.myapplication.adapters.FriendAdapter;
+import com.example.noso.myapplication.models.Friends;
 import com.example.noso.myapplication.beans.RecyclerTouchListener;
-import com.example.noso.myapplication.beans.UserId;
-import com.example.noso.myapplication.beans.Users;
+import com.example.noso.myapplication.models.UserId;
+import com.example.noso.myapplication.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +32,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class FriendsList extends Fragment{
+public class FriendsList extends Fragment {
 
     private View parentView;
     private ListView listView;
@@ -74,7 +69,7 @@ public class FriendsList extends Fragment{
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, r.getDisplayMetrics()));
     } //aflt el dptopx
 
-    private  void initView(){
+    private void initView() {
         client = ApiClient.getClient().create(FriendsClient.class);
         call = client.friends(PreferenceManager.xAuthToken);
         Log.d("homie", "onClick: " + call.toString());
@@ -122,7 +117,7 @@ public class FriendsList extends Fragment{
                                 }); //aflt el call2.enqueue bta3t el remove Friend
 
 
-                             } //OnClick el setPositiveButton
+                            } //OnClick el setPositiveButton
                         }); // aflt el setPositiveButton
                         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
@@ -141,9 +136,6 @@ public class FriendsList extends Fragment{
                 })); // aflt el addOnItemTouchListener
 
 
-
-
-
             } //aflt rl response bta3t el initial friend
 
             @Override
@@ -153,40 +145,7 @@ public class FriendsList extends Fragment{
         }); // aflt el call.enqueue bta3t el friendsList (initial list)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     } //aflt el initview()
-
-
 
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -202,9 +161,7 @@ public class FriendsList extends Fragment{
         }
 
 
-
     }
-
 
 
 } // aflt el fragment

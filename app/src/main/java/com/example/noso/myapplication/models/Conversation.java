@@ -1,5 +1,7 @@
 package com.example.noso.myapplication.models;
 
+import com.example.noso.myapplication.models.Friends;
+
 import java.util.List;
 
 public class Conversation {
