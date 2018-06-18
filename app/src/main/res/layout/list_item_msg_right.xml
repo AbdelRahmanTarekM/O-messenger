@@ -28,4 +28,15 @@
         android:textColor="@color/white"
         android:textSize="16dp" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="@dimen/img_msg"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_msg_you"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:visibility="gone" />
+
 </LinearLayout>

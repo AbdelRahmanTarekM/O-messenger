@@ -25,6 +25,14 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.ConversationsClient;
 import com.example.noso.myapplication.adapters.MessageAdapter;
@@ -40,10 +48,12 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,12 +64,14 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
 
     public static final int GET_FROM_GALLERY = 3;
     public static final int GET_FROM_CAMERA = 4;
+    public static final int SEND_IMAGE = 5;
     private static final String TAG = "Homie";
     private static int SIGN_IN_REQUEST_CODE = 1;
     private RelativeLayout activity_chat_screen;
     private LinearLayout messageBoxLayout, revealingLayout;
     private RelativeLayout relGesture, relFile, relCamera;
-    private String uri = "http://192.168.1.103:3001/", conversationId = "5b1d91c5f25ddb39805bb62c";
+    private String uri = "http://192.168.1.103:3001/", conversationId;
+    private String KEY;
 
     private MessageAdapter adapter;
     private List<Message> messages;
@@ -69,6 +81,11 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
     EditText input;
     boolean chatMode;
     Animation moveIn, moveOut, moveInFile, moveInGesture, moveInCamera;
+
+    AmazonS3Client s3;
+    TransferUtility transferUtility;
+
+    String path;
 
     private Socket mSocket;
 
@@ -107,6 +124,21 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Toast.makeText(ChatScreen.this, "Something went wrong", Toast.LENGTH_LONG).show();
+            }
+        }
+        if (requestCode == SEND_IMAGE && resultCode == Activity.RESULT_OK) {
+            try {
+                final Uri imageUri = data.getData();
+                Log.d(TAG, "onActivityResult: " + imageUri);
+                path = ImageSelectorUtils.getFilePathFromUri(this, imageUri);
+                Log.d(TAG, "path: " + path);
+                Calendar calendar = Calendar.getInstance();
+                KEY = PreferenceManager.id + conversationId + calendar.toString();
+                TransferObserver observer = transferUtility.upload(KEY, new File(path));
+                transferObserverListener(observer);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -167,6 +199,10 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
         messagesLV = findViewById(R.id.list_of_messages);
         messages = new ArrayList<>();
 
+
+        credentialProvider();
+        setTransferUtility();
+
         conversationId = getIntent().getStringExtra("id");
 
         ConversationsClient client = ApiClient.getClient().create(ConversationsClient.class);
@@ -187,7 +223,6 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
 
             }
         });
-
 
 
         mSocket.on("newMessage", onNewMessage);
@@ -283,7 +318,8 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
                 Toast.makeText(this, "Currently Unavailable", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_file:
-                Toast.makeText(this, "Currently Unavailable", Toast.LENGTH_SHORT).show();
+                final Intent intent = ImageSelectorUtils.getImageSelectionIntent();
+                startActivityForResult(intent, SEND_IMAGE);
                 break;
 
         }
@@ -297,5 +333,52 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
 
         mSocket.disconnect();
         mSocket.off("new message", onNewMessage);
+    }
+
+    public void credentialProvider() {
+        CognitoCachingCredentialsProvider credentialsProvider = new CognitoCachingCredentialsProvider(
+                getApplicationContext(),
+                "us-east-1:72e60533-8780-47c4-a4aa-9b4c7b24e0a0", // Identity pool ID
+                Regions.US_EAST_1 // Region
+        );
+
+        setAmazonS3Client(credentialsProvider);
+    }
+
+    public void setAmazonS3Client(CognitoCachingCredentialsProvider amazonS3Client) {
+        s3 = new AmazonS3Client(amazonS3Client);
+        s3.setRegion(Region.getRegion(Regions.US_EAST_1));
+    }
+
+    public void setTransferUtility() {
+        transferUtility = TransferUtility.builder().defaultBucket("omessenger-userfiles-mobilehub-792948277/public").s3Client(s3).context(this).build();
+    }
+
+    public void transferObserverListener(TransferObserver observer) {
+        observer.setTransferListener(new TransferListener() {
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    //TODO: send image as message
+                    Message message1 = new Message(PreferenceManager.id, PreferenceManager.username, 2, KEY, conversationId);
+                    Gson gson = new Gson();
+                    String jsonMessage = gson.toJson(message1, Message.class);
+                    mSocket.emit("createMessage", jsonMessage);
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+                int percentDone = (int) percentDonef;
+
+                Log.e("MainActivity", "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                Log.e("MainActivity", "onError: ", ex);
+            }
+        });
     }
 }
