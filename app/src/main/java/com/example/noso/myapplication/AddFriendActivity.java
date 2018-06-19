@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ public class AddFriendActivity extends AppCompatActivity implements View.OnClick
 
     ListView resultsList;
     List<Users> users;
-    Button searchBtn;
+    ImageButton searchBtn;
     EditText searchBar;
     ArrayAdapter<String> arrayAdapter;
 

@@ -70,7 +70,7 @@ public class ChatScreen extends AppCompatActivity implements View.OnClickListene
     private RelativeLayout activity_chat_screen;
     private LinearLayout messageBoxLayout, revealingLayout;
     private RelativeLayout relGesture, relFile, relCamera;
-    private String uri = "http://192.168.1.103:3001/", conversationId;
+    private String uri = "http://192.168.1.9:3001/", conversationId;
     private String KEY;
 
     private MessageAdapter adapter;

@@ -6,8 +6,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
@@ -37,7 +39,6 @@ public class FriendsList extends Fragment {
 
     private View parentView;
     private ListView listView;
-    private LinearLayout errorLayout;
     private Call<List<Friends>> call;
     private Call<List<Friends>> callNew;
     private int clickPosition;
@@ -46,28 +47,23 @@ public class FriendsList extends Fragment {
     private List<Friends> friendsList;
     private List<Friends> friendsNew;
     private FriendsClient client;
+    private CardView errorLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         parentView = inflater.inflate(R.layout.friends_list, container, false);
         recyclerView = parentView.findViewById(R.id.recycler_view_friend);
-        // listView = parentView.findViewById(R.id.friendsList);
-        //errorLayout = parentView.findViewById(R.id.layout_error_friends);
+        errorLayout = parentView.findViewById(R.id.friends_empty_card);
         friendsList = new ArrayList<>();
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new FriendsList.GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         initView();
         return parentView;
-    } //aflt el OnCReateView
+    }
 
-    private int dpToPx(int i) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, r.getDisplayMetrics()));
-    } //aflt el dptopx
 
     private void initView() {
         client = ApiClient.getClient().create(FriendsClient.class);
@@ -78,14 +74,12 @@ public class FriendsList extends Fragment {
             public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
                 friendsList = response.body();
                 if (friendsList == null || friendsList.size() == 0) {
-                    //errorLayout.setVisibility(View.VISIBLE);
-                    Toast.makeText(getActivity(), "No friends", Toast.LENGTH_SHORT).show();
+                    errorLayout.setVisibility(View.VISIBLE);
                 } else {
                     adapter = new FriendAdapter(getActivity(), friendsList);
                     adapter.notifyDataSetChanged();
                     recyclerView.setAdapter(adapter);
-                } // aflt el else bta3t el initial friends
-                recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+                } recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
                     @Override
                     public void onClick(View view, int position) {
                         clickPosition = position;
@@ -94,18 +88,14 @@ public class FriendsList extends Fragment {
                         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("homie", "onClick: AddFriend " + clickPosition + " " + friendsList.get(clickPosition).getID());
                                 Call<Users> call2 = client.removeFriend(PreferenceManager.xAuthToken, new UserId(friendsList.get(clickPosition).getID()));
                                 call2.enqueue(new Callback<Users>() {
                                     @Override
                                     public void onResponse(Call<Users> call, Response<Users> response) {
                                         Users users = response.body();
-                                        Log.d("homie", "onResponse: Add Friend response is null? " + (users == null));
-                                        Log.d("homie", "onClick: AddFriend " + response.message());
 
                                         friendsList.remove(clickPosition);
                                         adapter = new FriendAdapter(getActivity(), friendsList);
-                                        // adapter.notifyDataSetChanged();
                                         recyclerView.setAdapter(adapter);
 
                                     }
@@ -114,54 +104,37 @@ public class FriendsList extends Fragment {
                                     public void onFailure(Call<Users> call, Throwable t) {
 
                                     }
-                                }); //aflt el call2.enqueue bta3t el remove Friend
-
+                                });
 
                             } //OnClick el setPositiveButton
-                        }); // aflt el setPositiveButton
+                        });
                         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
                             }
-                        }); //aflt el setNegativeButton
+                        });
                         android.app.AlertDialog dialog = alertDialog.create();
                         dialog.show();
-                    } //aflt el OnClick bta3 el recyclerview
+                    }
 
                     @Override
                     public void onLongClick(View view, int position) {
 
                     }
-                })); // aflt el addOnItemTouchListener
+                }));
 
 
-            } //aflt rl response bta3t el initial friend
+            }
 
             @Override
             public void onFailure(Call<List<Friends>> call, Throwable t) {
 
             }
-        }); // aflt el call.enqueue bta3t el friendsList (initial list)
-
-
-    } //aflt el initview()
-
-
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
+        });
 
 
     }
 
 
-} // aflt el fragment
+}

@@ -3,6 +3,7 @@ package com.example.noso.myapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -10,11 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.noso.myapplication.Interfaces.ApiClient;
 import com.example.noso.myapplication.Interfaces.ConversationsClient;
+import com.example.noso.myapplication.adapters.ConversationsAdapter;
 import com.example.noso.myapplication.models.Conversation;
 import com.example.noso.myapplication.models.Friends;
 
@@ -96,38 +99,20 @@ public class Chats extends AppCompatActivity {
     }
 
     public void retreiveChats(){
-        final ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
 
-        Log.e(TAG, "retreiveChats: " );
         ConversationsClient client = ApiClient.getClient().create(ConversationsClient.class);
         Call<List<Conversation>> call = client.getConversations(PreferenceManager.id);
-        Log.e(TAG, "call: " +call.toString());
+
         call.enqueue(new Callback<List<Conversation>>() {
             @Override
             public void onResponse(Call<List<Conversation>> call, Response<List<Conversation>> response) {
-                Log.e(TAG, "onResponse: code: " + response.code());
-                Log.e(TAG, "onResponse: message: " + response.message());
                 if (response.isSuccessful()) {
-                    PreferenceManager.setConversations(response.body());
-                    if (PreferenceManager.conversations != null) {
-                        Log.e("Homie", String.valueOf(PreferenceManager.conversations.getConversations().size()));
-                        if (PreferenceManager.conversations.getConversations().size() != 0) {
-                            for (Conversation c : PreferenceManager.conversations.getConversations()) {
-                                StringBuilder builder = new StringBuilder();
-                                for (Friends f : c.getUsers()) {
-                                    if (!f.getUserName().equals(PreferenceManager.username)) {
-                                        Log.e(TAG, "Preference: " + PreferenceManager.username);
-                                        Log.e(TAG, "Conversation: " + f.getUserName());
-                                        builder.append(f.getUserName());
-                                        builder.append(" ");
-                                        Log.e(TAG, "Username: " + f.getUserName());
-                                    }
-                                }
-                                stringArrayAdapter.add(builder.toString());
-                                Log.e(TAG, "Builder Value: " + builder.toString());
-                            }
+                    List<Conversation> convos=response.body();
+                        if (convos.size() != 0) {
+                            PreferenceManager.setConversations(convos);
+                            final BaseAdapter adapter=new ConversationsAdapter(response.body(),Chats.this);
 
-                            listView.setAdapter(stringArrayAdapter);
+                            listView.setAdapter(adapter);
                             listView.setVisibility(View.VISIBLE);
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
@@ -138,7 +123,7 @@ public class Chats extends AppCompatActivity {
                                 }
                             });
                         }
-                    } else {
+                     else {
                         errorLayout.setVisibility(View.VISIBLE);
                     }
                 }
@@ -149,7 +134,5 @@ public class Chats extends AppCompatActivity {
                 Log.e(TAG, "onFailure: ",t );
             }
         });
-
-
     }
 }

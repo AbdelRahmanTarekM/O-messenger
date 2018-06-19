@@ -9,11 +9,11 @@
     tools:context="com.example.noso.myapplication.FriendsActivity"
     tools:showIn="@layout/friends_list">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_friend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:scrollbars="vertical" />
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/recycler_view_friend"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:clipToPadding="false"-->
+        <!--android:scrollbars="vertical" />-->
 
 </RelativeLayout>

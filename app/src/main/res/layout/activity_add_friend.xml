@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="8dp"
     tools:context="com.example.noso.myapplication.AddFriendActivity">
 
     <LinearLayout
@@ -17,12 +18,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="2" />
 
-        <Button
+        <ImageButton
             android:id="@+id/search_btn"
             style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="search" />
+            android:background="@null"
+            android:src="@drawable/ic_action_search"/>
     </LinearLayout>
 
     <ListView

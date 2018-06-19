@@ -1,6 +1,7 @@
 package com.example.noso.myapplication.adapters;
 
 import android.content.Context;
+import android.os.StrictMode;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,32 +74,19 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Friends friend = requestsList.get(position);
         holder.title.setText(friend.getUserName());
-        // holder.count.setText(friend.getNumOfSongs() + " songs");
+        holder.count.setText(friend.getEmail());
 
-        // TODO: loading album cover using Glide library
-        //Glide.with(mContext).load(friend.getPicURL()).into(holder.thumbnail);
         final Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_WEEK, 7);
 
-//        Thread thread = new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                try  {
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        thread.start();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         String displayPicture = s3.generatePresignedUrl("omessenger-userfiles-mobilehub-792948277/public", friend.getID(), calendar.getTime()).toString();
-        Log.e(TAG, "presignedURL: " + displayPicture);
+
         Glide.with(mContext)
                 .load(displayPicture)
-                .centerCrop()
+                .placeholder(R.drawable.user)
                 .into(holder.thumbnail);
 
     }

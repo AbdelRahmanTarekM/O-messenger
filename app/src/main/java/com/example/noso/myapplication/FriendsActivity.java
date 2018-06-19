@@ -20,23 +20,14 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
     private ResideMenuItem itemHome;
     private ResideMenuItem itemProfile;
     private Button add;
-   // private ResideMenuItem itemChat;
- //   private ResideMenuItem itemSettings;
 
-    /**
-     * Called when the activity is first created.
-     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         add = findViewById(R.id.add_btn);
         add.setOnClickListener(this);
-        //Toolbar myToolbar = (Toolbar) findViewById(R.id.chats_toolbar);
-        //myToolbar.setTitle("Chats");
-        //myToolbar.setBackgroundColor(R.color.navigationBarColor);
-        //myToolbar.setTitleTextColor(R.color.windowBackground);
-        //setSupportActionBar(myToolbar);
         mContext = this;
         setUpMenu();
         if( savedInstanceState == null )
@@ -46,7 +37,6 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
     private void setUpMenu() {
         // attach to current activity;
         resideMenu = new ResideMenu(this);
-        //resideMenu.setUse3D(true);
         resideMenu.setBackground(R.color.loginRegistrationBackground);
         resideMenu.attachToActivity(this);
         resideMenu.setMenuListener(menuListener);
@@ -54,8 +44,8 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
         resideMenu.setScaleValue(0.6f);
 
         // create menu items;
-        itemHome     = new ResideMenuItem(this, R.drawable.ic_friends,     "Friends List");
-        itemProfile  = new ResideMenuItem(this, R.drawable.ic_action_add,  "Friends Request");
+        itemHome     = new ResideMenuItem(this, R.drawable.ic_friends,     "Friends");
+        itemProfile  = new ResideMenuItem(this, R.drawable.ic_action_add,  "Requests");
 
         itemHome.setOnClickListener(this);
         itemProfile.setOnClickListener(this);
@@ -97,12 +87,10 @@ public class FriendsActivity extends FragmentActivity implements View.OnClickLis
     private ResideMenu.OnMenuListener menuListener = new ResideMenu.OnMenuListener() {
         @Override
         public void openMenu() {
-            Toast.makeText(mContext, "Menu is opened!", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void closeMenu() {
-            Toast.makeText(mContext, "Menu is closed!", Toast.LENGTH_SHORT).show();
         }
     };
 

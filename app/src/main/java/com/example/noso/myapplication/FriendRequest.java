@@ -2,11 +2,10 @@ package com.example.noso.myapplication;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,8 +45,7 @@ public class FriendRequest extends Fragment {
 
     private View parentView;
     private ListView listView;
-    private LinearLayout errorLayout;
-
+    private CardView errorLayout;
     private RecyclerView recyclerView;
     private RequestAdapter adapter;
     private List<Friends> friendsList;
@@ -60,11 +58,11 @@ public class FriendRequest extends Fragment {
         parentView = inflater.inflate(R.layout.friend_requests, container, false);
         overflow = parentView.findViewById(R.id.overflow);
         recyclerView = parentView.findViewById(R.id.recycler_view);
+        errorLayout=parentView.findViewById(R.id.request_empty_card);
         friendsList = new ArrayList<>();
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
         initView();
@@ -72,10 +70,6 @@ public class FriendRequest extends Fragment {
         return parentView;
     }
 
-    private int dpToPx(int i) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, i, r.getDisplayMetrics()));
-    }
 
     private void initView() {
 
@@ -89,18 +83,11 @@ public class FriendRequest extends Fragment {
             public void onResponse(Call<List<Friends>> call, Response<List<Friends>> response) {
                 friendsList = response.body();
                 if (friendsList == null || friendsList.size() == 0) {
-                    // errorLayout.setVisibility(View.VISIBLE);
-                    Toast.makeText(getActivity(), "No requests", Toast.LENGTH_SHORT).show();
+                     errorLayout.setVisibility(View.VISIBLE);
                 } else {
-
                     adapter = new RequestAdapter(getActivity(), friendsList);
-                    // adapter.notifyDataSetChanged();
                     recyclerView.setAdapter(adapter);
                 }
-                // arrayAdapter.
-
-                // recyclerView.setAdapter(adapter);
-
                 recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
                     @Override
                     public void onClick(View view, final int position) {
@@ -115,17 +102,11 @@ public class FriendRequest extends Fragment {
                     }
                 }));
             }
-
             @Override
             public void onFailure(Call<List<Friends>> call, Throwable t) {
 
             }
         });
-
-
-
-
-
     }
 
     private void showPopupMenu(View view) {
@@ -136,54 +117,6 @@ public class FriendRequest extends Fragment {
         popup.setOnMenuItemClickListener(new FriendRequest.MyMenuItemClickListener());
         popup.show();
     }
-    private void initCollapsingToolbar() {
-        final CollapsingToolbarLayout collapsingToolbar =
-                getActivity().findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = getActivity().findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-    }
-
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-
-
-    }
-
-
-
-
-
 
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
@@ -194,7 +127,6 @@ public class FriendRequest extends Fragment {
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.action_approve_request:
-                    Log.d("homie", "onClick: AddFriend " + clickPosition + " " + friendsList.get(clickPosition).getID());
                     Call<Users> call = client.approveFriend(PreferenceManager.xAuthToken, new UserId(friendsList.get(clickPosition).getID()));
                     call.enqueue(new Callback<Users>() {
                         @Override
@@ -202,19 +134,12 @@ public class FriendRequest extends Fragment {
                             Users user = response.body();
                             friendsList.remove(clickPosition);
                             adapter = new RequestAdapter(getActivity(), friendsList);
-                            // adapter.notifyDataSetChanged();
                             recyclerView.setAdapter(adapter);
-                            // adapter.remove(names.get(position));
-                            Log.d("homie", "onResponse: Add Friend response is null? " + (user == null));
-                            Log.d("homie", "onClick: AddFriend " + response.message());
                         }
 
                         @Override
                         public void onFailure(Call<Users> call, Throwable t) {
-
-
                             Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
-
                         }
                     });
                     return true;
@@ -228,16 +153,12 @@ public class FriendRequest extends Fragment {
                             Users user = response.body();
                             friendsList.remove(clickPosition);
                             adapter = new RequestAdapter(getActivity(), friendsList);
-                            // adapter.notifyDataSetChanged();
                             recyclerView.setAdapter(adapter);
-                            Log.d("homie", "onResponse: Add Friend response is null? " + (user == null));
-                            Log.d("homie", "onClick: AddFriend " + response.message());
                         }
 
                         @Override
                         public void onFailure(Call<Users> call, Throwable t) {
                             Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
-
                         }
                     });
 
